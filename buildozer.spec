@@ -10,7 +10,7 @@ version = 1.0
 source.dir = .
 source.include_exts = py,png,jpg,kv,json
 # Entry point
-entrypoint = main.py
+entrypoint = app.py.py
 
 # Icon
 icon.filename = icon.png
