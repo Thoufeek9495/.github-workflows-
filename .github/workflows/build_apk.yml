@@ -1,0 +1,43 @@
+name: 📦 Build APK with Buildozer
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+
+    steps:
+      - name: 📥 Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: 🐍 Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+
+      - name: 🧰 Install Dependencies
+        run: |
+          sudo apt update
+          sudo apt install -y python3-pip zip unzip libffi-dev libssl-dev \
+            build-essential libsqlite3-dev libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev \
+            libavcodec-dev libavformat-dev libswscale-dev libjpeg-dev \
+            libfreetype6-dev libpng-dev libSDL2-dev libmtdev-dev \
+            libgl1-mesa-dev libgles2-mesa-dev zlib1g-dev pkg-config \
+            openjdk-17-jdk adb
+          python3 -m pip install --upgrade pip setuptools Cython virtualenv
+
+      - name: 🔧 Install Buildozer
+        run: pip install buildozer
+
+      - name: 🧱 Build the APK
+        run: |
+          buildozer init
+          cp buildozer.spec buildozer.spec.bak
+          buildozer android debug
+
+      - name: ⬆️ Upload APK Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: RoyalWinAI-debug.apk
+          path: bin/*.apk
