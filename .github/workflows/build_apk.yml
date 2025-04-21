@@ -2,67 +2,47 @@ name: 📦 Build APK with Buildozer
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - main
 
 jobs:
   build:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
 
     steps:
       - name: 📥 Checkout Repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
-      - name: 🛠️ Set up Python
+      - name: 🐍 Set up Python 3.10
         uses: actions/setup-python@v4
         with:
-          python-version: "3.10"
+          python-version: '3.10'
 
-      - name: 🔧 Install System Dependencies
+      - name: 🔧 Install Dependencies
         run: |
           sudo apt-get update
           sudo apt-get install -y \
+            libffi-dev libssl-dev \
+            libgstreamer1.0-dev \
+            libgstreamer-plugins-base1.0-dev \
+            libunwind-dev \
             build-essential \
             ccache \
             git \
             zip \
             unzip \
             openjdk-11-jdk \
-            python3-pip \
-            libffi-dev \
-            libssl-dev \
-            libjpeg-dev \
-            zlib1g-dev \
-            libncurses5-dev \
-            libtinfo5 \
-            libsqlite3-dev \
-            libgstreamer1.0-dev \
-            libgstreamer-plugins-base1.0-dev \
-            libmtdev-dev \
-            libgl1-mesa-dev \
-            libgles2-mesa-dev \
-            libudev-dev \
-            libdrm-dev \
-            libasound2-dev \
-            libpulse-dev \
-            libx11-dev
+            python3-pip
+          pip install --upgrade pip
+          pip install buildozer
 
-      - name: 🐍 Install Buildozer
-        run: |
-          python3 -m pip install --upgrade pip
-          pip install --user buildozer cython
-          echo "$HOME/.local/bin" >> $GITHUB_PATH
-
-      - name: 📦 Initialize Buildozer (if needed)
-        run: |
-          if [ ! -f buildozer.spec ]; then
-            buildozer init
-          fi
-
-      - name: 🤖 Build APK
+      - name: 📦 Build APK
         run: |
           buildozer android debug
 
       - name: 📤 Upload APK Artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
-          name: RoyalWinAI.apk
+          name: RoyalWinAI-APK
           path: bin/*.apk
