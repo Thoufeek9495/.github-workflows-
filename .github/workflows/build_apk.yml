@@ -19,11 +19,14 @@ jobs:
       - name: 🛠 Install dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y build-essential ccache libffi-dev libssl-dev libjpeg-dev libz-dev \
-                                  libavcodec-dev libavformat-dev libswscale-dev libfreetype6-dev \
-                                  libgl1-mesa-dev libgles2-mesa-dev libgstreamer1.0-dev \
-                                  libgstreamer-plugins-base1.0-dev libmtdev-dev libpq-dev \
-                                  zlib1g-dev libncurses5 libstdc++6 libunwind-dev
+          sudo apt-get install -y \
+            build-essential ccache libffi-dev libssl-dev \
+            libjpeg-dev libz-dev libavcodec-dev libavformat-dev \
+            libswscale-dev libfreetype6-dev libgl1-mesa-dev \
+            libgles2-mesa-dev libgstreamer1.0-dev \
+            libgstreamer-plugins-base1.0-dev libmtdev-dev \
+            libpq-dev zlib1g-dev libncurses5 libstdc++6 \
+            libunwind-dev python3-dev
           python -m pip install --upgrade pip
           pip install Cython virtualenv
 
@@ -31,12 +34,12 @@ jobs:
         run: |
           pip install buildozer
 
-      - name: 🧱 Build APK
+      - name: 📱 Build APK
         run: |
           buildozer android debug
 
       - name: 📤 Upload APK
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
-          name: RoyalWinAI.apk
+          name: RoyalWinAI
           path: bin/*.apk
