@@ -5,39 +5,91 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
 
     steps:
-      - name: 📥 Checkout Repository
-        uses: actions/checkout@v3
+      - name: 🧾 Checkout code
+        uses: actions/checkout@v4
 
-      - name: 🐍 Set up Python
+      - name: 🧰 Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: "3.10"
+          python-version: '3.10'
 
-      - name: 🧰 Install Dependencies
+      - name: 🛠️ Install dependencies
         run: |
-          sudo apt update
-          sudo apt install -y python3-pip zip unzip libffi-dev libssl-dev \
-            build-essential libsqlite3-dev libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev \
-            libavcodec-dev libavformat-dev libswscale-dev libjpeg-dev \
-            libfreetype6-dev libpng-dev libSDL2-dev libmtdev-dev \
-            libgl1-mesa-dev libgles2-mesa-dev zlib1g-dev pkg-config \
-            openjdk-17-jdk adb
-          python3 -m pip install --upgrade pip setuptools Cython virtualenv
+          sudo apt-get update
+          sudo apt-get install -y \
+            build-essential \
+            ccache \
+            git \
+            zip \
+            unzip \
+            openjdk-11-jdk \
+            python3-pip \
+            libffi-dev \
+            libssl-dev \
+            libjpeg-dev \
+            zlib1g-dev \
+            libncurses5-dev \
+            libncursesw5-dev \
+            libtinfo5 \
+            libsqlite3-dev \
+            libgstreamer1.0-dev \
+            libgstreamer-plugins-base1.0-dev \
+            libavcodec-dev \
+            libavformat-dev \
+            libswscale-dev \
+            libmtdev-dev \
+            libgl1-mesa-dev \
+            libgles2-mesa-dev \
+            libxtst-dev \
+            libxrandr-dev \
+            libxss-dev \
+            libxext-dev \
+            libxrender-dev \
+            libx11-dev \
+            libxcomposite-dev \
+            libxcursor-dev \
+            libxi-dev \
+            libxinerama-dev \
+            libxkbcommon-dev \
+            libwayland-dev \
+            libegl1-mesa-dev \
+            libdrm-dev \
+            libgbm-dev \
+            libudev-dev \
+            libinput-dev \
+            libpulse-dev \
+            libasound2-dev \
+            libibus-1.0-dev \
+            libatk-bridge2.0-dev \
+            libatk1.0-dev \
+            libcairo2-dev \
+            libgdk-pixbuf2.0-dev \
+            libpango1.0-dev \
+            libgtk-3-dev \
+            libharfbuzz-dev \
+            libfribidi-dev \
+            libepoxy-dev \
+            libxkbcommon-x11-dev \
+            libwayland-egl1-mesa \
+            libwayland-cursor0 \
+            libwayland-client0 \
+            libwayland-server0 \
+            libwayland-bin \
+            libwayland-dev \
+            libunwind-dev
 
-      - name: 🔧 Install Buildozer
-        run: pip install buildozer
+          python3 -m pip install --upgrade pip
+          pip install --user buildozer cython
 
-      - name: 🧱 Build the APK
+      - name: 📦 Build APK
         run: |
-          buildozer init
-          cp buildozer.spec buildozer.spec.bak
           buildozer android debug
 
-      - name: ⬆️ Upload APK Artifact
-        uses: actions/upload-artifact@v3
+      - name: 📤 Upload APK artifact
+        uses: actions/upload-artifact@v4
         with:
-          name: RoyalWinAI-debug.apk
+          name: RoyalWinAI-APK
           path: bin/*.apk
