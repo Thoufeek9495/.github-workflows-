@@ -1,0 +1,39 @@
+name: 📦 Build APK with Buildozer
+
+on:
+  workflow_dispatch:  # Allows manual trigger from GitHub Actions UI
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+
+    steps:
+    - name: ⬇️ Checkout Code
+      uses: actions/checkout@v3
+
+    - name: ⚙️ Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+
+    - name: 🧰 Install dependencies
+      run: |
+        sudo apt update
+        sudo apt install -y libffi-dev libssl-dev python3-pip python3-setuptools git zip unzip openjdk-11-jdk zlib1g-dev
+        pip install --upgrade pip
+        pip install buildozer cython
+
+    - name: 🔧 Install Android SDK & NDK
+      run: |
+        buildozer android clean
+        buildozer android update
+
+    - name: 📦 Build APK
+      run: |
+        buildozer -v android debug
+
+    - name: ⬆️ Upload APK
+      uses: actions/upload-artifact@v3
+      with:
+        name: RoyalWinAI-APK
+        path: bin/*.apk
